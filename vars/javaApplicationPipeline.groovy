@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 
 def call(config = [:]) {
-    node('docker') {
+    node {
         try {
             config = config as JavaBuildConfig
 
