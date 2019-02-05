@@ -30,15 +30,14 @@ def call(config = [:]) {
                     }
                 }
 
-                def repository = "shboland/spring-api"
                 stage ('Docker build and push') {
                     container ('docker') {
                         withCredentials([usernamePassword(credentialsId: 'dockerhub',
                                 usernameVariable: 'registryUser', passwordVariable: 'registryPassword')]) {
 
                             sh "docker login -u=$registryUser -p=$registryPassword"
-                            sh "docker build -t $repository:$commitId ."
-                            sh "docker push $repository:$commitId"
+                            sh "docker build -t $config.imageTag:$commitId ."
+                            sh "docker push $config.imageTag:$commitId"
                         }
                     }
                 }
@@ -47,7 +46,7 @@ def call(config = [:]) {
                     container ('kubectl') {
                         dir ("deployment") {
                             sh """
-                                kustomize edit set imagetag $repository:$commitId;
+                                kustomize edit set imagetag $config.imageTag:$commitId;
                                 kustomize build overlays/test | kubectl apply --record -f  -
                             """
                         }
