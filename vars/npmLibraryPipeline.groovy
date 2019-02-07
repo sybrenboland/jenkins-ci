@@ -2,11 +2,6 @@
 
 def call(config = [:]) {
     config = config as NpmLibraryPipelineConfig
-    def isRelease = env.BRANCH_NAME == config.releaseBranch
-    echo "Is Release ????"
-    echo env.BRANCH_NAME
-    echo config.releaseBranch
-    echo isRelease
 
     podTemplate(
             label: 'slave-pod',
@@ -18,6 +13,11 @@ def call(config = [:]) {
                 stage ('Extract') {
                     checkout scm
                 }
+
+                def isRelease = env.BRANCH_NAME == config.releaseBranch
+                echo "Is Release ????"
+                echo env.BRANCH_NAME
+                echo config.releaseBranch
 
                 if (isRelease) {
                     def releaseType
