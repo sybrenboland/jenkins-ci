@@ -3,6 +3,7 @@
 def call(config = [:]) {
     config = config as NpmLibraryPipelineConfig
     def isRelease = env.BRANCH_NAME == config.releaseBranch
+    echo isRelease
 
     podTemplate(
             label: 'slave-pod',
