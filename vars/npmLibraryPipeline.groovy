@@ -3,6 +3,9 @@
 def call(config = [:]) {
     config = config as NpmLibraryPipelineConfig
     def isRelease = env.BRANCH_NAME == config.releaseBranch
+    echo "Is Release ????"
+    echo env.BRANCH_NAME
+    echo config.releaseBranch
     echo isRelease
 
     podTemplate(
