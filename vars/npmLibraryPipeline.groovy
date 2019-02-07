@@ -29,7 +29,14 @@ def call(config = [:]) {
 
                     stage('Bump Version') {
                         container ('node') {
-                            sh(script: "npm version ${releaseType} -m \"release: version %s\"", returnStdout: true)
+                            withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'gitUser', passwordVariable: 'gitPassword')]) {
+                                sh """
+                                      git config --global --replace-all credential.helper \'/bin/bash -c \"echo username=$gitUser; echo password=$gitPassword\"\'
+                                      git config --global user.name "$gitUser"
+                                   """
+
+                                sh(script: "npm version ${releaseType} -m \"release: version %s\"", returnStdout: true)
+                            }
                         }
                     }
 
