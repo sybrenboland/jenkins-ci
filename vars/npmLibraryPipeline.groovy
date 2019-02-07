@@ -45,7 +45,6 @@ def call(config = [:]) {
 
                     stage('Publish Release') {
                         container ('node') {
-                            closure.setDelegate(this)
                             withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'gitUser', passwordVariable: 'gitPassword')]) {
                                 sh """
                                       git config --global --replace-all credential.helper \'/bin/bash -c \"echo username=$gitUser; echo password=$gitPassword\"\'
@@ -60,7 +59,6 @@ def call(config = [:]) {
                                            HEAD:master \
                                            refs/tags/$releaseVersion
                                    """
-                                closure.call()
                             }
                         }
                     }
