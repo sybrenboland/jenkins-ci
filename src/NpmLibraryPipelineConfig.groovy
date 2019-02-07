@@ -1,4 +1,4 @@
 class NpmLibraryPipelineConfig {
-    String nodeImage = 'node:11-stretch'
+    String nodeImage = 'shboland/node-11-chrome'
     String releaseBranch = 'master'
 }
