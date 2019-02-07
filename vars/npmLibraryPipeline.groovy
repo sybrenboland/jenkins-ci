@@ -33,7 +33,7 @@ def call(config = [:]) {
                                 sh """
                                       git config --global --replace-all credential.helper \'/bin/bash -c \"echo username=$gitUser; echo password=$gitPassword\"\'
                                       git config --global user.name "$gitUser"
-                                      git config --global user.email ""
+                                      git config --global user.email "$gitUser@gmail.com"
                                    """
 
                                 sh(script: "npm version ${releaseType} -m \"release: version %s\"", returnStdout: true)
@@ -50,7 +50,7 @@ def call(config = [:]) {
                                 sh """
                                       git config --global --replace-all credential.helper \'/bin/bash -c \"echo username=$gitUser; echo password=$gitPassword\"\'
                                       git config --global user.name "$gitUser"
-                                      git config --global user.email ""
+                                      git config --global user.email "$gitUser@gmail.com"
                                    """
 
                                 sh "npm run publish"
