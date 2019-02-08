@@ -52,7 +52,7 @@ def call(config = [:]) {
                                       git config --global user.email "$gitUser@gmail.com"
                                    """
 
-                                sh "npm run publish"
+                                // sh "npm run publish"
 
                                 sh """
                                        git push --atomic origin \
