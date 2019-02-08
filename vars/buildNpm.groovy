@@ -6,6 +6,7 @@ def call() {
             sh(script: "node -pe \"require('./package.json').version\"", returnStdout: true)
             sh "npm install"
             sh "npm run lint"
+            sh "npm run test"
             sh "npm run build"
             sh "npm run build.demo"
         }

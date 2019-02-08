@@ -2,7 +2,6 @@
 
 def call(config = [:]) {
     config = config as NpmLibraryPipelineConfig
-    def isRelease = env.BRANCH_NAME == config.releaseBranch
     GitUtils gitUtils = new GitUtils()
 
     podTemplate(
@@ -16,7 +15,7 @@ def call(config = [:]) {
                     checkout scm
                 }
 
-                if (isRelease) {
+                if (isRelease = env.BRANCH_NAME == config.releaseBranch) {
                     def releaseType
                     stage('Initialize Release') {
                         releaseType = input(id: 'releaseTypeInput', message: 'Please specify release type', parameters: [
@@ -32,7 +31,6 @@ def call(config = [:]) {
                             }
                         }
                     }
-                    echo releaseVersion
 
                     buildNpm()
 
