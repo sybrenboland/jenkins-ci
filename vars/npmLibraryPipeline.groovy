@@ -32,6 +32,7 @@ def call(config = [:]) {
                             }
                         }
                     }
+                    echo releaseVersion
 
                     buildNpm()
 
@@ -40,7 +41,7 @@ def call(config = [:]) {
                             gitUtils.withGitCredentials {
                                 // sh 'npm run publish'
 
-                                sh 'git push --atomic origin HEAD:master refs/tags/$releaseVersion'
+                                sh "git push --atomic origin HEAD:master refs/tags/$releaseVersion"
                             }
                         }
                     }
