@@ -2,6 +2,7 @@
 
 def call(config = [:]) {
     config = config as NpmLibraryPipelineConfig
+    def isRelease = env.BRANCH_NAME == config.releaseBranch
 
     podTemplate(
             label: 'slave-pod',
@@ -14,11 +15,6 @@ def call(config = [:]) {
                     checkout scm
                 }
 
-                def isRelease = env.BRANCH_NAME == config.releaseBranch
-                echo "Is Release ????"
-                echo env.BRANCH_NAME
-                echo config.releaseBranch
-
                 if (isRelease) {
                     def releaseType
                     stage('Initialize Release') {
@@ -27,6 +23,7 @@ def call(config = [:]) {
                         ])
                     }
 
+                    def releaseVersion
                     stage('Bump Version') {
                         container ('node') {
                             withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'gitUser', passwordVariable: 'gitPassword')]) {
@@ -36,7 +33,7 @@ def call(config = [:]) {
                                       git config --global user.email "$gitUser@gmail.com"
                                    """
 
-                                sh(script: "npm version ${releaseType} -m \"release: version %s\"", returnStdout: true)
+                                releaseVersion = sh(script: "npm version ${releaseType} -m \"release: version %s\"", returnStdout: true)
                             }
                         }
                     }
