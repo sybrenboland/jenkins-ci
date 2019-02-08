@@ -15,7 +15,7 @@ def call(config = [:]) {
                     checkout scm
                 }
 
-                if (isRelease = env.BRANCH_NAME == config.releaseBranch) {
+                if (env.BRANCH_NAME == config.releaseBranch) {
                     def releaseType
                     stage('Initialize Release') {
                         releaseType = input(id: 'releaseTypeInput', message: 'Please specify release type', parameters: [
