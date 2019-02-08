@@ -3,6 +3,7 @@
 def call(config = [:]) {
     config = config as NpmLibraryPipelineConfig
     def isRelease = env.BRANCH_NAME == config.releaseBranch
+    GitUtils gitUtils = new GitUtils()
 
     podTemplate(
             label: 'slave-pod',
@@ -26,13 +27,7 @@ def call(config = [:]) {
                     def releaseVersion
                     stage('Bump Version') {
                         container ('node') {
-                            withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'gitUser', passwordVariable: 'gitPassword')]) {
-                                sh """
-                                      git config --global --replace-all credential.helper \'/bin/bash -c \"echo username=$gitUser; echo password=$gitPassword\"\'
-                                      git config --global user.name "$gitUser"
-                                      git config --global user.email "$gitUser@gmail.com"
-                                   """
-
+                            gitUtils.withGitCredentials {
                                 releaseVersion = sh(script: "npm version ${releaseType} -m \"release: version %s\"", returnStdout: true)
                             }
                         }
@@ -42,20 +37,10 @@ def call(config = [:]) {
 
                     stage('Publish Release') {
                         container ('node') {
-                            withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'gitUser', passwordVariable: 'gitPassword')]) {
-                                sh """
-                                      git config --global --replace-all credential.helper \'/bin/bash -c \"echo username=$gitUser; echo password=$gitPassword\"\'
-                                      git config --global user.name "$gitUser"
-                                      git config --global user.email "$gitUser@gmail.com"
-                                   """
+                            gitUtils.withGitCredentials {
+                                // sh 'npm run publish'
 
-                                // sh "npm run publish"
-
-                                sh """
-                                       git push --atomic origin \
-                                           HEAD:master \
-                                           refs/tags/$releaseVersion
-                                   """
+                                sh 'git push --atomic origin HEAD:master refs/tags/$releaseVersion'
                             }
                         }
                     }
